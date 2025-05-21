@@ -1,112 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:note_app/Pages/Home_Page.dart';
-import 'package:note_app/Pages/Registration_Page.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key, required String title});
+
+
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final auth = FirebaseAuth.instance;
+
+  void loginUser() async {
+    try {
+      await auth.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => HomePage()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Login Failed: ${e.toString()}")));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      appBar: AppBar(title: const Text('Login')),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const  Text(
-              'Please Login Your Account',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.indigoAccent,
-              ),
-            ),
-
-            SizedBox(height: 30),
-
             TextField(
-              decoration: InputDecoration(
-                labelText: 'E-mail',
-                prefixIcon: Icon(Icons.mail),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-              ),
+              controller: emailController,
+              decoration: InputDecoration(labelText: 'Email'),
             ),
-
-            SizedBox(height: 20),
-
             TextField(
+              controller: passwordController,
               obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                prefixIcon: Icon(Icons.lock),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-              ),
+              decoration: InputDecoration(labelText: 'Password'),
             ),
-
-            SizedBox(height: 15),
-
-            ElevatedButton(
+            const SizedBox(height: 20),
+            ElevatedButton(onPressed: loginUser, child: const Text("Login")),
+            TextButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
+                  MaterialPageRoute(builder: (_) => HomePage()),
                 );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.indigoAccent,
-                padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.5),
-                ),
-              ),
-
-              child: Text(
-                'Login',
-                style: TextStyle(fontSize: 18,color: Colors.white),
-              ),
-            ),
-
-            SizedBox(height: 30),
-
-            Align(
-              alignment: Alignment.center,
-              child: TextButton(
-                onPressed: () {
-                  // Handle forgot password
-                },
-                child: Text(
-                  'Forgot Password?',
-                  style: TextStyle(color: Colors.grey[700]),
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Don’t have an account?'),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const RegistrationPage()),
-                    );
-                  },
-                  child: Text(
-                    'Sign Up',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red[800],
-                    ),
-                  ),
-                ),
-              ],
+              child: const Text("Don't have an account? Register"),
             ),
           ],
         ),
