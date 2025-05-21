@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
       );
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => HomePage()),
+        MaterialPageRoute(builder: (_) => Homescreen()),
       );
     } catch (e) {
       ScaffoldMessenger.of(
@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => HomePage()),
+                  MaterialPageRoute(builder: (_) => Homescreen()),
                 );
               },
               child: const Text("Don't have an account? Register"),
